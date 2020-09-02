@@ -2,6 +2,7 @@
 {
     using Craftsman.Builders;
     using Craftsman.Builders.Dtos;
+    using Craftsman.Builders.Repositories;
     using Craftsman.Builders.Seeders;
     using Craftsman.Builders.Tests.Fakes;
     using Craftsman.Builders.Tests.IntegrationTests;
@@ -50,7 +51,7 @@
                 var template = FileParsingHelper.GetApiTemplateFromFile(filePath);
                 WriteHelpText($"Your template file was parsed successfully.");
 
-                FileParsingHelper.RunPrimaryKeyGuard(template);
+                FileParsingHelper.RunKeyGuard(template);
                 FileParsingHelper.RunSolutionNameAssignedGuard(template);
 
                 //var rootProjectDirectory = Directory.GetCurrentDirectory().Contains("Debug") ? @"C:\Users\Paul\Documents\testoutput" : Directory.GetCurrentDirectory();

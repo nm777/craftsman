@@ -50,5 +50,42 @@
                 }
             };
         }
+
+        public static ApiTemplate FakeCompositeApiTemplate()
+        {
+            return new ApiTemplate()
+            {
+                SolutionName = "BespokedBikes.Api",
+                DbContext = new TemplateDbContext()
+                {
+                    ContextName = "BespokedBikesDbContext",
+                    DatabaseName = "BespokedBikes",
+                    Provider = "SqlServer"
+                },
+                Entities = new List<Entity>()
+                {
+                    new Entity()
+                    {
+                        Name = "Car",
+                        Lambda = "c",
+                        Properties = new List<EntityProperty>()
+                        {
+                            new EntityProperty()
+                            {
+                                Name = "State",
+                                Type = "string",
+                                IsCompositeKey = true,
+                            },
+                            new EntityProperty()
+                            {
+                                Name = "LicensePlate",
+                                Type = "string",
+                                IsCompositeKey = true,
+                            },
+                        }
+                    }
+        }
+            };
+        }
     }
 }

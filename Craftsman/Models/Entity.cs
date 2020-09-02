@@ -56,6 +56,13 @@ namespace Craftsman.Models
         {
             get => Properties.Where(p => p.IsPrimaryKey).FirstOrDefault();
         }
+
+        /// <summary>
+        /// The properties that are set to be a key. List of properties in case there is a composite key.
+        /// </summary>
+        public List<EntityProperty> CompositeKeyProperties
+        {
+            get => Properties.Where(p => p.IsCompositeKey).ToList();
         }
     }
 }

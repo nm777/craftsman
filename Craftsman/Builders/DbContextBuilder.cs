@@ -51,6 +51,22 @@
 
         public static string GetContextFileText(string classNamespace, ApiTemplate template)
         {
+            var compositeString = "";
+            var entities = template.Entities.ToList();
+            foreach (var entity in entities)
+            {
+                var innerComposite = new List<string>();
+                foreach (var prop in entity.CompositeKeyProperties)
+                {
+                    innerComposite.Add($"{entity.Lambda}.{prop.Name}");
+                }
+
+                var newLine = entity == entities.LastOrDefault() ? "" : $"{Environment.NewLine}";
+                if (innerComposite.Count > 0)
+                    compositeString += @$"modelBuilder.Entity<{entity.Name}>()
+                .HasKey({entity.Lambda} => new {{ {String.Join(", ", innerComposite.ToArray()) } }});{newLine}";
+            }
+
             return @$"namespace {classNamespace}
 {{
     using Application.Interfaces;
@@ -70,6 +86,11 @@
         #region DbSet Region - Do Not Delete
 {GetDbSetText(template.Entities)}
         #endregion
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {{
+            {compositeString}
+        }}
     }}
 }}";
         }

@@ -1,4 +1,4 @@
-﻿namespace Craftsman.Builders
+﻿namespace Craftsman.Builders.Repositories
 {
     using Craftsman.Builders.Dtos;
     using Craftsman.Enums;
@@ -25,7 +25,7 @@
             if (!File.Exists(classPath.FullClassPath))
                 throw new FileNotFoundException($"The `{classPath.FullClassPath}` file could not be found.");
 
-            foreach(var prop in props)
+            foreach (var prop in props)
             {
                 if (prop.IsForeignKey)
                 {

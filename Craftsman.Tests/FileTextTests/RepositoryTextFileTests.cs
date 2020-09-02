@@ -1,7 +1,7 @@
 ﻿namespace Craftsman.Tests.FileTextTests
 {
     using AutoBogus;
-    using Craftsman.Builders;
+    using Craftsman.Builders.Repositories;
     using Craftsman.Models;
     using Craftsman.Tests.Fakes;
     using FluentAssertions;

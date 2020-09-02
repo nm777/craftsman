@@ -60,7 +60,7 @@ namespace Craftsman.Models
         {
             get
             {
-                if (IsPrimaryKey)
+                if (IsPrimaryKey || IsCompositeKey)
                     return true;
                 else
                     return false;
@@ -81,5 +81,10 @@ namespace Craftsman.Models
         /// Captures the foreign key property name
         /// </summary>
         public string ForeignKeyPropName { get; set; }
+
+        /// <summary>
+        /// Designates the property as a composite key for the entity
+        /// </summary>
+        public bool IsCompositeKey { get; set; } = false;
     }
 }

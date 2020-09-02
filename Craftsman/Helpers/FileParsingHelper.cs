@@ -57,11 +57,10 @@
             return true;
         }
 
-        public static void RunPrimaryKeyGuard(ApiTemplate template)
+        public static void RunKeyGuard(ApiTemplate template)
         {
-            if (template.Entities.Where(e => e.PrimaryKeyProperties.Count <= 0).ToList().Count > 0)
-                throw new MissingPrimaryKeyException("One of your entity properties is missing a primary key designation. " +
-                    "Please make sure you have an `IsPrimaryKey: true` option on whichever property you want to be used as your prmary key.");
+            if (template.Entities.Where(e => e.PrimaryKeyProperty == null).ToList().Count == 0 && template.Entities.Where(e => e.CompositeKeyProperties.Count <= 0).ToList().Count > 0)
+                throw new MissingKeyException();
         }
 
         public static void RunSolutionNameAssignedGuard(ApiTemplate template)

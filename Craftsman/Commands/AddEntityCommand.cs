@@ -2,6 +2,7 @@
 {
     using Craftsman.Builders;
     using Craftsman.Builders.Dtos;
+    using Craftsman.Builders.Repositories;
     using Craftsman.Builders.Seeders;
     using Craftsman.Builders.Tests.Fakes;
     using Craftsman.Builders.Tests.IntegrationTests;
@@ -49,7 +50,7 @@
 
                 WriteHelpText($"Your template file was parsed successfully.");
 
-                FileParsingHelper.RunPrimaryKeyGuard(template);
+                FileParsingHelper.RunKeyGuard(template);
 
                 // add all files based on the given template config
                 RunEntityBuilders(solutionDirectory, template);

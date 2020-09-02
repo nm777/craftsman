@@ -1,4 +1,4 @@
-﻿namespace Craftsman.Builders
+﻿namespace Craftsman.Builders.Repositories
 {
     using Craftsman.Builders.Dtos;
     using Craftsman.Enums;
@@ -6,6 +6,7 @@
     using Craftsman.Helpers;
     using Craftsman.Models;
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -33,7 +34,7 @@
                 {
                     WriteError($"An unhandled exception occured when running the API command.\nThe error details are: \n{e.Message}");
                 }
-                 
+
             }
         }
 
@@ -101,10 +102,12 @@
         {
             var paramBase = entity.Name.LowercaseFirstLetter();
             var fkIncludes = "";
-            foreach(var fk in entity.Properties.Where(p => p.IsForeignKey))
+            foreach (var fk in entity.Properties.Where(p => p.IsForeignKey))
             {
                 fkIncludes += $@"{Environment.NewLine}                .Include({fk.Name.ToLower().Substring(0, 1)} => {fk.Name.ToLower().Substring(0, 1)}.{fk.Name})";
             }
+
+            var getRepoMethodText = entity.CompositeKeyProperties.Count > 0 ? RepositoryHelpers.GetCompositeRepoMethods(entity, fkIncludes) : RepositoryHelpers.GetPrimaryRepoMethods(entity, fkIncludes);
 
             return @$"namespace {classNamespace}
 {{
@@ -157,19 +160,7 @@
                 {paramBase}Parameters.PageSize);
         }}
 
-        public async Task<{entity.Name}> Get{entity.Name}Async(int {paramBase}Id)
-        {{
-            // include marker -- requires return _context.{entity.Plural} as it's own line with no extra text -- do not delete this comment
-            return await _context.{entity.Plural}{fkIncludes}
-                .FirstOrDefaultAsync({entity.Lambda} => {entity.Lambda}.{entity.PrimaryKeyProperty.Name} == {paramBase}Id);
-        }}
-
-        public {entity.Name} Get{entity.Name}(int {paramBase}Id)
-        {{
-            // include marker -- requires return _context.{entity.Plural} as it's own line with no extra text -- do not delete this comment
-            return _context.{entity.Plural}{fkIncludes}
-                .FirstOrDefault({entity.Lambda} => {entity.Lambda}.{entity.PrimaryKeyProperty.Name} == {paramBase}Id);
-        }}
+        {getRepoMethodText}
 
         public void Add{entity.Name}({entity.Name} {paramBase})
         {{
@@ -224,7 +215,7 @@
                     while (null != (line = input.ReadLine()))
                     {
                         var newText = $"{line}";
-                        if(line.Contains("#region Repositories"))
+                        if (line.Contains("#region Repositories"))
                         {
                             newText += @$"{Environment.NewLine}            services.AddScoped<{Utilities.GetRepositoryName(entity.Name, true)}, {Utilities.GetRepositoryName(entity.Name, false)}>();";
                         }
@@ -240,7 +231,7 @@
             }
 
             // delete the old file and set the name of the new one to the original name
-            File.Delete(classPath.FullClassPath); 
+            File.Delete(classPath.FullClassPath);
             File.Move(tempPath, classPath.FullClassPath);
 
             GlobalSingleton.AddUpdatedFile(classPath.FullClassPath.Replace($"{solutionDirectory}{Path.DirectorySeparatorChar}", ""));
