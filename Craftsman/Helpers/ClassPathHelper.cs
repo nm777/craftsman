@@ -8,6 +8,15 @@
 
     public static class ClassPathHelper
     {
+        public static ClassPath MediatorCommandClassPath(string solutionDirectory, string className, string entityName)
+        {
+            return new ClassPath(solutionDirectory, Path.Combine("Application", "Mediator", "Commands", entityName), className);
+        }
+        public static ClassPath MediatorHandlerClassPath(string solutionDirectory, string className, string entityName)
+        {
+            return new ClassPath(solutionDirectory, Path.Combine("Application", "Mediator", "Handlers", entityName), className);
+        }
+
         public static ClassPath ControllerClassPath(string solutionDirectory, string className)
         {
             return new ClassPath(solutionDirectory, Path.Combine("WebApi","Controllers","v1"), className);
