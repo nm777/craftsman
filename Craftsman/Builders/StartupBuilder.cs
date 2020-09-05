@@ -60,6 +60,7 @@
     using Infrastructure.Persistence.Seeders;
     using Infrastructure.Persistence.Contexts;
     using WebApi.Extensions;
+    using MediatR;
 
     public class Startup{envName}
     {{
@@ -77,6 +78,7 @@
             services.AddApplicationLayer();
             services.AddPersistenceInfrastructure(_config);
             services.AddSharedInfrastructure(_config);
+            services.AddMediatR(Assembly.GetExecutingAssembly()); // move this to service extensions
             services.AddControllers()
                 .AddNewtonsoftJson();
             services.AddApiVersioningExtension();
@@ -138,6 +140,7 @@
             services.AddApplicationLayer();
             services.AddPersistenceInfrastructure(_config);
             services.AddSharedInfrastructure(_config);
+            services.AddMediatR(Assembly.GetExecutingAssembly()); // move this to service extensions
             services.AddControllers()
                 .AddNewtonsoftJson();
             services.AddApiVersioningExtension();

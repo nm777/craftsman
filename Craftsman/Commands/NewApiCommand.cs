@@ -2,6 +2,7 @@
 {
     using Craftsman.Builders;
     using Craftsman.Builders.Dtos;
+    using Craftsman.Builders.Mediator;
     using Craftsman.Builders.Seeders;
     using Craftsman.Builders.Tests.Fakes;
     using Craftsman.Builders.Tests.IntegrationTests;
@@ -113,6 +114,9 @@
                 UpdateTestBuilder.CreateEntityUpdateTests(solutionDirectory, template, entity);
                 DeleteTestBuilder.DeleteEntityWriteTests(solutionDirectory, template, entity);
                 WebAppFactoryBuilder.CreateWebAppFactory(solutionDirectory, template, entity);
+
+                CreateCommandBuilder.GenerateCreateCommand(solutionDirectory, entity);
+                CreateHandlerBuilder.GenerateCreateHandler(solutionDirectory, entity);
             }
 
             // environments
@@ -123,6 +127,10 @@
 
             //services
             SwaggerBuilder.AddSwagger(solutionDirectory, template);
+
+            //additional packages that may be needed
+            NugetPackageInstaller.InstallMediatr(solutionDirectory);
+            NugetPackageInstaller.InstallCoreMvc(solutionDirectory);
         }
 
         private static void CreateNewFoundation(ApiTemplate template, string directory)

@@ -16,7 +16,7 @@
         {
             try
             {
-                var classPath = ClassPathHelper.MediatorCommandClassPath(solutionDirectory, $"{entity.Name}.cs", entity.Name);
+                var classPath = ClassPathHelper.MediatorCommandClassPath(solutionDirectory, $"Create{entity.Name}Command.cs", entity.Name);
 
                 if (!Directory.Exists(classPath.ClassDirectory))
                     Directory.CreateDirectory(classPath.ClassDirectory);
@@ -50,19 +50,16 @@
             var creationDto = Utilities.GetDtoName(entity.Name, Dto.Creation);
             return @$"namespace {classNamespace}
 {{
-    using Foundation.Api.Models;
     using MediatR;
-    using Microsoft.AspNetCore.Mvc;
+    using {ClassPathHelper.DtoClassPath("", "", entity.Name).ClassNamespace};
 
-    public class Create{entity.Name}Command : IRequest<ActionResult<{readDto}>>
+    public class Create{entity.Name}Command : IRequest<{readDto}>
     {{
         public {creationDto} {creationDto} {{ get; set; }}
-        public Controller Controller {{ get; set; }}
 
-        public CreateValueToReplaceCommand({creationDto} {creationDto.LowercaseFirstLetter()}, Controller controller)
+        public Create{entity.Name}Command({creationDto} {creationDto.LowercaseFirstLetter()})
         {{
             {creationDto} = {creationDto.LowercaseFirstLetter()};
-            Controller = controller;
         }}
     }}
 }}";

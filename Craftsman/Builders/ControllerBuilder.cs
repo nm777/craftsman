@@ -1,4 +1,6 @@
-﻿namespace Craftsman.Builders
+﻿using Craftsman.Models;
+
+namespace Craftsman.Builders
 {
     using Craftsman.Builders.Dtos;
     using Craftsman.Enums;
@@ -70,6 +72,8 @@
     using Microsoft.AspNetCore.JsonPatch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
+    using MediatR;
+    using {ClassPathHelper.MediatorCommandClassPath("", "", entity.Name).ClassNamespace};
 
     [ApiController]
     [Route(""api/{entityNamePlural}"")]
@@ -78,14 +82,18 @@
     {{
         private readonly {Utilities.GetRepositoryName(entity.Name, true)} _{lowercaseEntityVariable}Repository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
         public {entityNamePlural}Controller({Utilities.GetRepositoryName(entity.Name, true)} {lowercaseEntityVariable}Repository
-            , IMapper mapper)
+            , IMapper mapper
+            , IMediator mediator)
         {{
             _{lowercaseEntityVariable}Repository = {lowercaseEntityVariable}Repository ??
                 throw new ArgumentNullException(nameof({lowercaseEntityVariable}Repository));
             _mapper = mapper ??
                 throw new ArgumentNullException(nameof(mapper));
+            _mediator = mediator ??
+                throw new ArgumentNullException(nameof(mediator));
         }}
 
 
@@ -142,28 +150,12 @@
         [HttpPost]
         public ActionResult<{readDto}> Add{entityName}({creationDto} {lowercaseEntityVariable}ForCreation)
         {{
-            var validationResults = new {entityName}ForCreationDtoValidator().Validate({lowercaseEntityVariable}ForCreation);
-            validationResults.AddToModelState(ModelState, null);
+            var command = new {Utilities.GetMediatorCreateCommandName(entityName)}({lowercaseEntityVariable}ForCreation);
+            var result = _mediator.Send(command);
 
-            if (!ModelState.IsValid)
-            {{
-                return BadRequest(new ValidationProblemDetails(ModelState));
-                //return ValidationProblem();
-            }}
-
-            var {lowercaseEntityVariable} = _mapper.Map<{entityName}>({lowercaseEntityVariable}ForCreation);
-            _{lowercaseEntityVariable}Repository.Add{entityName}({lowercaseEntityVariable});
-            var saveSuccessful = _{lowercaseEntityVariable}Repository.Save();
-
-            if(saveSuccessful)
-            {{
-                var {lowercaseEntityVariable}Dto = _{lowercaseEntityVariable}Repository.Get{entityName}({lowercaseEntityVariable}.{entity.PrimaryKeyProperty.Name}); //get from repo for fk object, if needed
-                return CreatedAtRoute(""Get{entityName}"",
-                    new {{ {lowercaseEntityVariable}Dto.{primaryKeyProp.Name} }},
-                    {lowercaseEntityVariable}Dto);
-            }}
-
-            return StatusCode(500);
+            return CreatedAtRoute(""Get{entityName}"", 
+                new {{ result.Result.{entity.PrimaryKeyProperty.Name} }},
+                result.Result);
         }}
 
         [HttpDelete(""{{{lowercaseEntityVariable}Id}}"")]
@@ -278,6 +270,44 @@
         }}
     }}
 }}";
+        }
+
+        public static string GetPostText(Entity entity, bool mediator)
+        {
+            var lowercaseEntityVariable = entity.Name.LowercaseFirstLetter();
+            var entityName = entity.Name;
+            var primaryKeyProp = entity.PrimaryKeyProperty;
+
+            if (mediator)
+            {
+                return @$"";
+            }
+            else
+            {
+                return $@"
+            var validationResults = new {entityName}ForCreationDtoValidator().Validate({lowercaseEntityVariable}ForCreation);
+            validationResults.AddToModelState(ModelState, null);
+
+            if (!ModelState.IsValid)
+            {{
+                return BadRequest(new ValidationProblemDetails(ModelState));
+                //return ValidationProblem();
+            }}
+
+            var {lowercaseEntityVariable} = _mapper.Map<{entityName}>({lowercaseEntityVariable}ForCreation);
+            _{lowercaseEntityVariable}Repository.Add{entityName}({lowercaseEntityVariable});
+            var saveSuccessful = _{lowercaseEntityVariable}Repository.Save();
+
+            if(saveSuccessful)
+            {{
+                var {lowercaseEntityVariable}Dto = _{lowercaseEntityVariable}Repository.Get{entityName}({lowercaseEntityVariable}.{entity.PrimaryKeyProperty.Name}); //get from repo for fk object, if needed
+                return CreatedAtRoute(""Get{entityName}"",
+                    new {{ {lowercaseEntityVariable}Dto.{primaryKeyProp.Name} }},
+                    {lowercaseEntityVariable}Dto);
+            }}
+
+            return StatusCode(500);";
+            }
         }
     }
 }

@@ -34,6 +34,11 @@
             return isInterface ? $"I{entityName}Repository" : $"{entityName}Repository";
         }
 
+        public static string GetMediatorCreateCommandName(string entityName)
+        {
+            return $"Create{entityName}Command";
+        }
+
         public static string GetControllerName(string entityName)
         {
             return $"{entityName}Controller";

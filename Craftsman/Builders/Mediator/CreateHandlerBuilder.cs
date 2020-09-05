@@ -16,7 +16,7 @@
         {
             try
             {
-                var classPath = ClassPathHelper.MediatorHandlerClassPath(solutionDirectory, $"{entity.Name}.cs", entity.Name);
+                var classPath = ClassPathHelper.MediatorHandlerClassPath(solutionDirectory, $"Create{entity.Name}Handler.cs", entity.Name);
 
                 if (!Directory.Exists(classPath.ClassDirectory))
                     Directory.CreateDirectory(classPath.ClassDirectory);
@@ -48,20 +48,21 @@
         {
             var readDto = Utilities.GetDtoName(entity.Name, Dto.Read);
             var creationDto = Utilities.GetDtoName(entity.Name, Dto.Creation);
+            var commandClassName = Utilities.GetMediatorCreateCommandName(entity.Name);
+
             return @$"namespace {classNamespace}
 {{
     using AutoMapper;
-    using Foundation.Api.Data.Entities;
-    using Foundation.Api.Mediator.Commands;
-    using Foundation.Api.Models;
-    using Foundation.Api.Services;
     using MediatR;
-    using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using {ClassPathHelper.IRepositoryClassPath("", "", entity.Name).ClassNamespace};
+    using {ClassPathHelper.MediatorCommandClassPath("", "", entity.Name).ClassNamespace};
+    using {ClassPathHelper.DtoClassPath("", "", entity.Name).ClassNamespace};
+    using {ClassPathHelper.EntityClassPath("","").ClassNamespace};
 
-    public class Create{entity.Name}Handler : IRequestHandler<Create{entity.Name}Command, ActionResult<{entity.Name}Dto>>
+    public class Create{entity.Name}Handler : IRequestHandler<{commandClassName}, {readDto}>
     {{
         private readonly {Utilities.GetRepositoryName(entity.Name, true)} _{entity.Name.LowercaseFirstLetter()}Repository;
         private readonly IMapper _mapper;
@@ -75,16 +76,13 @@
                 throw new ArgumentNullException(nameof(mapper));
         }}
 
-        public async Task<ActionResult<{readDto}>> Handle(Create{entity.Name}Command create{entity.Name}Command, CancellationToken cancellationToken)
+        public async Task<{readDto}> Handle({commandClassName} create{entity.Name}Command, CancellationToken cancellationToken)
         {{
             var {entity.Name.LowercaseFirstLetter()} = _mapper.Map<{entity.Name}>(create{entity.Name}Command.{creationDto});
             _{entity.Name.LowercaseFirstLetter()}Repository.Add{entity.Name}({entity.Name.LowercaseFirstLetter()});
             _{entity.Name.LowercaseFirstLetter()}Repository.Save();
 
-            var {entity.Name.LowercaseFirstLetter()}Dto = _mapper.Map<{readDto}>({entity.Name.LowercaseFirstLetter()});
-            return create{entity.Name}Command.Controller.CreatedAtRoute(""Get{entity.Name}"",
-                new {{ {entity.Name.LowercaseFirstLetter()}Dto.{entity.PrimaryKeyProperty.Name} }},
-                {entity.Name.LowercaseFirstLetter()}Dto);
+            return _mapper.Map<{readDto}>({entity.Name.LowercaseFirstLetter()});
         }}
     }}
 }}";
