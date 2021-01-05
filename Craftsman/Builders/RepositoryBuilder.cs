@@ -229,25 +229,23 @@
             var tempPath = $"{classPath.FullClassPath}temp";
             var interfaceNamespaceAdded = false;
             using (var input = File.OpenText(classPath.FullClassPath))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                while (null != (line = input.ReadLine()))
                 {
-                    string line;
-                    while (null != (line = input.ReadLine()))
+                    var newText = $"{line}";
+                    if(line.Contains("#region Repositories"))
                     {
-                        var newText = $"{line}";
-                        if(line.Contains("#region Repositories"))
-                        {
-                            newText += @$"{Environment.NewLine}            services.AddScoped<{Utilities.GetRepositoryName(entity.Name, true)}, {Utilities.GetRepositoryName(entity.Name, false)}>();";
-                        }
-                        else if (line.Contains("using") & !interfaceNamespaceAdded)
-                        {
-                            newText += @$"{Environment.NewLine}    using Application.Interfaces.{entity.Name};";
-                            interfaceNamespaceAdded = true;
-                        }
-
-                        output.WriteLine(newText);
+                        newText += @$"{Environment.NewLine}            services.AddScoped<{Utilities.GetRepositoryName(entity.Name, true)}, {Utilities.GetRepositoryName(entity.Name, false)}>();";
                     }
+                    else if (line.Contains("using") & !interfaceNamespaceAdded)
+                    {
+                        newText += @$"{Environment.NewLine}    using Application.Interfaces.{entity.Name};";
+                        interfaceNamespaceAdded = true;
+                    }
+
+                    output.WriteLine(newText);
                 }
             }
 

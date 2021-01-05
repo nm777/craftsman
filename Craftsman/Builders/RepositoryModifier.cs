@@ -31,43 +31,41 @@
                 {
                     var tempPath = $"{classPath.FullClassPath}temp";
                     using (var input = File.OpenText(classPath.FullClassPath))
+                    using (var output = new StreamWriter(tempPath))
                     {
-                        using (var output = new StreamWriter(tempPath))
+                        string line;
+                        var inlcudeText = $@"{Environment.NewLine}                .Include({prop.Name.ToLower().Substring(0, 1)} => {prop.Name.ToLower().Substring(0, 1)}.{prop.Name})";
+                        bool updateNextLine = false;
+
+                        // TODO: refactor this. it's... janky. the idea is that I have a comment to mark where
+                        // to add the include statements, but it needs to be added two lines after.
+                        // this process will continually decrement the lineTracker variable, the number
+                        // doesn't matter until you get to the marker, when it will be set to 1, so we can
+                        // decrement it until we get to the line that we want to add it to
+                        //
+                        // with all that said, it's really awful to follow and I need to refactor this with a more elegant method
+                        var lineTracker = 0;
+
+                        while (null != (line = input.ReadLine()))
                         {
-                            string line;
-                            var inlcudeText = $@"{Environment.NewLine}                .Include({prop.Name.ToLower().Substring(0, 1)} => {prop.Name.ToLower().Substring(0, 1)}.{prop.Name})";
-                            bool updateNextLine = false;
-
-                            // TODO: refactor this. it's... janky. the idea is that I have a comment to mark where 
-                            // to add the include statements, but it needs to be added two lines after.
-                            // this process will continually decrement the lineTracker variable, the number 
-                            // doesn't matter until you get to the marker, when it will be set to 1, so we can 
-                            // decrement it until we get to the line that we want to add it to
-                            //
-                            // with all that said, it's really awful to follow and I need to refactor this with a more elegant method
-                            var lineTracker = 0;
-
-                            while (null != (line = input.ReadLine()))
+                            var newText = $"{line}";
+                            if (line.Contains(@$"var collection"))
                             {
-                                var newText = $"{line}";
-                                if (line.Contains(@$"var collection"))
-                                {
-                                    newText += inlcudeText;
-                                }
-                                if (line.Contains(@$"include marker"))
-                                {
-                                    lineTracker = 2;
-                                    updateNextLine = true;
-                                }
-                                if (updateNextLine && lineTracker == 1)
-                                {
-                                    newText += inlcudeText;
-                                    updateNextLine = false;
-                                }
-                                lineTracker--;
-
-                                output.WriteLine(newText);
+                                newText += inlcudeText;
                             }
+                            if (line.Contains(@$"include marker"))
+                            {
+                                lineTracker = 2;
+                                updateNextLine = true;
+                            }
+                            if (updateNextLine && lineTracker == 1)
+                            {
+                                newText += inlcudeText;
+                                updateNextLine = false;
+                            }
+                            lineTracker--;
+
+                            output.WriteLine(newText);
                         }
                     }
 

@@ -26,20 +26,18 @@
 
             var tempPath = $"{classPath.FullClassPath}temp";
             using (var input = File.OpenText(classPath.FullClassPath))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                while (null != (line = input.ReadLine()))
                 {
-                    string line;
-                    while (null != (line = input.ReadLine()))
+                    var newText = $"{line}";
+                    if (line.Contains(@$"""profiles"""))
                     {
-                        var newText = $"{line}";
-                        if (line.Contains(@$"""profiles"""))
-                        {
-                            newText += GetProfileText(env);
-                        }
-
-                        output.WriteLine(newText);
+                        newText += GetProfileText(env);
                     }
+
+                    output.WriteLine(newText);
                 }
             }
 

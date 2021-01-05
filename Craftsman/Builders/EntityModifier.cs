@@ -27,20 +27,18 @@
 
             var tempPath = $"{classPath.FullClassPath}temp";
             using (var input = File.OpenText(classPath.FullClassPath))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                while (null != (line = input.ReadLine()))
                 {
-                    string line;
-                    while (null != (line = input.ReadLine()))
+                    var newText = $"{line}";
+                    if (line.Contains($"add-on property marker"))
                     {
-                        var newText = $"{line}";
-                        if (line.Contains($"add-on property marker"))
-                        {
-                            newText += @$"{Environment.NewLine}{Environment.NewLine}{EntityBuilder.EntityPropBuilder(props)}";
-                        }
-
-                        output.WriteLine(newText);
+                        newText += @$"{Environment.NewLine}{Environment.NewLine}{EntityBuilder.EntityPropBuilder(props)}";
                     }
+
+                    output.WriteLine(newText);
                 }
             }
 

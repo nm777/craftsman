@@ -106,16 +106,15 @@
 
             var tempPath = $"{classPath.FullClassPath}temp";
             using (var input = File.OpenText(classPath.FullClassPath))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                while (null != (line = input.ReadLine()))
                 {
-                    string line;
-                    while (null != (line = input.ReadLine()))
+                    var newText = $"{line}";
+                    if (line.Contains("#region DbContext"))
                     {
-                        var newText = $"{line}";
-                        if (line.Contains("#region DbContext"))
-                        {
-                            newText += @$"          
+                        newText += @$"
             if (configuration.GetValue<bool>(""UseInMemoryDatabase""))
             {{
                 services.AddDbContext<{template.DbContext.ContextName}>(options =>
@@ -128,10 +127,9 @@
                         configuration.GetConnectionString(""{template.DbContext.DatabaseName}""),
                         builder => builder.MigrationsAssembly(typeof({template.DbContext.ContextName}).Assembly.FullName)));
             }}";
-                        }
-
-                        output.WriteLine(newText);
                     }
+
+                    output.WriteLine(newText);
                 }
             }
 

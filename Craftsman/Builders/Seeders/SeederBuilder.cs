@@ -67,20 +67,18 @@
 
             var tempPath = $"{pathString}temp";
             using (var input = File.OpenText(pathString))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                while (null != (line = input.ReadLine()))
                 {
-                    string line;
-                    while (null != (line = input.ReadLine()))
+                    var newText = $"{line}";
+                    if (line.Contains("#region Entity Context Region"))
                     {
-                        var newText = $"{line}";
-                        if (line.Contains("#region Entity Context Region"))
-                        {
-                            newText += @$"{Environment.NewLine}{GetSeederContextText(template)}";
-                        }
-
-                        output.WriteLine(newText);
+                        newText += @$"{Environment.NewLine}{GetSeederContextText(template)}";
                     }
+
+                    output.WriteLine(newText);
                 }
             }
 

@@ -27,20 +27,18 @@
 
             var tempPath = $"{classPath.FullClassPath}temp";
             using (var input = File.OpenText(classPath.FullClassPath))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                while (null != (line = input.ReadLine()))
                 {
-                    string line;
-                    while (null != (line = input.ReadLine()))
+                    var newText = $"{line}";
+                    if (line.Contains($"#region DbSet Region"))
                     {
-                        var newText = $"{line}";
-                        if (line.Contains($"#region DbSet Region"))
-                        {
-                            newText += @$"{Environment.NewLine}{DbContextBuilder.GetDbSetText(template.Entities)}";
-                        }
-
-                        output.WriteLine(newText);
+                        newText += @$"{Environment.NewLine}{DbContextBuilder.GetDbSetText(template.Entities)}";
                     }
+
+                    output.WriteLine(newText);
                 }
             }
 

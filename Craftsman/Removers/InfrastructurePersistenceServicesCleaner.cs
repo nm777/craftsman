@@ -20,46 +20,44 @@
 
             var tempPath = $"{classPath.FullClassPath}temp";
 
-            /* there are two regions in this file that need to be cleared. 
-             * so we need to loop through each line in the file and, when we hit the start of the region, we 
-             * need to skip every line after that (effectively deleting it because it won't end up in the new 
-             * file that we are creating). We will keep skipping each line in the region until we hit the end 
+            /* there are two regions in this file that need to be cleared.
+             * so we need to loop through each line in the file and, when we hit the start of the region, we
+             * need to skip every line after that (effectively deleting it because it won't end up in the new
+             * file that we are creating). We will keep skipping each line in the region until we hit the end
              * of the region. this variable is going to track if we are in teh region and need to skip the current line
              */
             var removeLineSection = false;
 
             using (var input = File.OpenText(classPath.FullClassPath))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                while (null != (line = input.ReadLine()))
                 {
-                    string line;
-                    while (null != (line = input.ReadLine()))
+                    var newText = $"{line}";
+
+                    // repo region, dbcontext region, using for interfaces
+                    if (line.Contains("#region Repositories") || line.Contains("#region DbContext"))
                     {
-                        var newText = $"{line}";
-
-                        // repo region, dbcontext region, using for interfaces
-                        if (line.Contains("#region Repositories") || line.Contains("#region DbContext"))
-                        {
-                            output.WriteLine(newText);
-                            removeLineSection = true;
-                        }
-                        else if (line.Contains("#endregion"))
-                        {
-                            output.WriteLine(newText);
-                            removeLineSection = false;
-                        }
-                        else if (line.Contains("ValueToReplace"))
-                        {
-                            // do nothing so we skip it, but don't want to 
-                            // update removeLineSection since it's just one line
-                        }
-                        else
-                        {
-                            if(!removeLineSection)
-                                output.WriteLine(newText);
-                        }
-
+                        output.WriteLine(newText);
+                        removeLineSection = true;
                     }
+                    else if (line.Contains("#endregion"))
+                    {
+                        output.WriteLine(newText);
+                        removeLineSection = false;
+                    }
+                    else if (line.Contains("ValueToReplace"))
+                    {
+                        // do nothing so we skip it, but don't want to
+                        // update removeLineSection since it's just one line
+                    }
+                    else
+                    {
+                        if(!removeLineSection)
+                            output.WriteLine(newText);
+                    }
+
                 }
             }
 

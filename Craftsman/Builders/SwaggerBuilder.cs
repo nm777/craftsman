@@ -35,24 +35,22 @@
 
                 var tempPath = $"{classPath.FullClassPath}temp";
                 using (var input = File.OpenText(classPath.FullClassPath))
+                using (var output = new StreamWriter(tempPath))
                 {
-                    using (var output = new StreamWriter(tempPath))
+                    string line;
+                    while (null != (line = input.ReadLine()))
                     {
-                        string line;
-                        while (null != (line = input.ReadLine()))
+                        var newText = $"{line}";
+                        if (line.Contains("#region Dynamic Services"))
                         {
-                            var newText = $"{line}";
-                            if (line.Contains("#region Dynamic Services"))
-                            {
-                                newText += $"{Environment.NewLine}            services.AddSwaggerExtension();";
-                            }
-                            else if (line.Contains("#region Dynamic App"))
-                            {
-                                newText += $"{Environment.NewLine}            app.UseSwaggerExtension();";
-                            }
-
-                            output.WriteLine(newText);
+                            newText += $"{Environment.NewLine}            services.AddSwaggerExtension();";
                         }
+                        else if (line.Contains("#region Dynamic App"))
+                        {
+                            newText += $"{Environment.NewLine}            app.UseSwaggerExtension();";
+                        }
+
+                        output.WriteLine(newText);
                     }
                 }
 
@@ -88,20 +86,18 @@
 
                 var tempPath = $"{classPath.FullClassPath}temp";
                 using (var input = File.OpenText(classPath.FullClassPath))
+                using (var output = new StreamWriter(tempPath))
                 {
-                    using (var output = new StreamWriter(tempPath))
+                    string line;
+                    while (null != (line = input.ReadLine()))
                     {
-                        string line;
-                        while (null != (line = input.ReadLine()))
+                        var newText = $"{line}";
+                        if (line.Contains("#region Swagger Region"))
                         {
-                            var newText = $"{line}";
-                            if (line.Contains("#region Swagger Region"))
-                            {
-                                newText += GetSwaggerServiceExtensionText(template);
-                            }
-
-                            output.WriteLine(newText);
+                            newText += GetSwaggerServiceExtensionText(template);
                         }
+
+                        output.WriteLine(newText);
                     }
                 }
 
@@ -193,20 +189,18 @@
 
                 var tempPath = $"{classPath.FullClassPath}temp";
                 using (var input = File.OpenText(classPath.FullClassPath))
+                using (var output = new StreamWriter(tempPath))
                 {
-                    using (var output = new StreamWriter(tempPath))
+                    string line;
+                    while (null != (line = input.ReadLine()))
                     {
-                        string line;
-                        while (null != (line = input.ReadLine()))
+                        var newText = $"{line}";
+                        if (line.Contains("#region Swagger Region"))
                         {
-                            var newText = $"{line}";
-                            if (line.Contains("#region Swagger Region"))
-                            {
-                                newText += GetSwaggerAppExtensionText(template);
-                            }
-
-                            output.WriteLine(newText);
+                            newText += GetSwaggerAppExtensionText(template);
                         }
+
+                        output.WriteLine(newText);
                     }
                 }
 

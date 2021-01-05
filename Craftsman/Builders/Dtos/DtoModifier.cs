@@ -34,35 +34,33 @@
 
             var tempPath = $"{classPath.FullClassPath}temp";
             using (var input = File.OpenText(classPath.FullClassPath))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                var fkUsingStatements = "";
+
+                if (dto == Dto.Read)
                 {
-                    string line;
-                    var fkUsingStatements = "";
-
-                    if (dto == Dto.Read)
-                    { 
-                        foreach (var prop in props)
-                        {
-                            if(prop.IsForeignKey)
-                                fkUsingStatements += DtoFileTextGenerator.GetForeignKeyUsingStatements(classPath, fkUsingStatements, prop, dto);
-                        }
-                    }
-
-                    while (null != (line = input.ReadLine()))
+                    foreach (var prop in props)
                     {
-                        var newText = $"{line}";
-                        if (line.Contains($"add-on property marker"))
-                        {
-                            newText += @$"{Environment.NewLine}{Environment.NewLine}{DtoFileTextGenerator.DtoPropBuilder(props, dto)}";
-                        }
-                        if (line.Contains("using System;"))
-                        {
-                            newText += fkUsingStatements;
-                        }
-
-                        output.WriteLine(newText);
+                        if(prop.IsForeignKey)
+                            fkUsingStatements += DtoFileTextGenerator.GetForeignKeyUsingStatements(classPath, fkUsingStatements, prop, dto);
                     }
+                }
+
+                while (null != (line = input.ReadLine()))
+                {
+                    var newText = $"{line}";
+                    if (line.Contains($"add-on property marker"))
+                    {
+                        newText += @$"{Environment.NewLine}{Environment.NewLine}{DtoFileTextGenerator.DtoPropBuilder(props, dto)}";
+                    }
+                    if (line.Contains("using System;"))
+                    {
+                        newText += fkUsingStatements;
+                    }
+
+                    output.WriteLine(newText);
                 }
             }
 

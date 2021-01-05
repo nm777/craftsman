@@ -27,28 +27,26 @@
 
             var tempPath = $"{classPath.FullClassPath}temp";
             using (var input = File.OpenText(classPath.FullClassPath))
+            using (var output = new StreamWriter(tempPath))
             {
-                using (var output = new StreamWriter(tempPath))
+                string line;
+                while (null != (line = input.ReadLine()))
                 {
-                    string line;
-                    while (null != (line = input.ReadLine()))
-                    {
-                        var newText = $"{line}";
-                        if (line.Contains($"options.User.RequireUniqueEmail"))
-                            newText = @$"                options.User.RequireUniqueEmail = {setup.IdentityRequirements.RequireUniqueEmail.ToString().ToLower()};";
-                        else if (line.Contains($"options.Password.RequiredLength"))
-                            newText = @$"                options.Password.RequiredLength = {setup.IdentityRequirements.RequiredLength};";
-                        else if (line.Contains($"options.Password.RequireDigit"))
-                            newText = @$"                options.Password.RequireDigit = {setup.IdentityRequirements.RequireDigit.ToString().ToLower()};";
-                        else if (line.Contains($"options.Password.RequireLowercase"))
-                            newText = @$"                options.Password.RequireLowercase = {setup.IdentityRequirements.RequireLowercase.ToString().ToLower()};";
-                        else if (line.Contains($"options.Password.RequireUppercase"))
-                            newText = @$"                options.Password.RequireUppercase = {setup.IdentityRequirements.RequireUppercase.ToString().ToLower()};";
-                        else if (line.Contains($"options.Password.RequireNonAlphanumeric"))
-                            newText = @$"                options.Password.RequireNonAlphanumeric = {setup.IdentityRequirements.RequireNonAlphanumeric.ToString().ToLower()};";
+                    var newText = $"{line}";
+                    if (line.Contains($"options.User.RequireUniqueEmail"))
+                        newText = @$"                options.User.RequireUniqueEmail = {setup.IdentityRequirements.RequireUniqueEmail.ToString().ToLower()};";
+                    else if (line.Contains($"options.Password.RequiredLength"))
+                        newText = @$"                options.Password.RequiredLength = {setup.IdentityRequirements.RequiredLength};";
+                    else if (line.Contains($"options.Password.RequireDigit"))
+                        newText = @$"                options.Password.RequireDigit = {setup.IdentityRequirements.RequireDigit.ToString().ToLower()};";
+                    else if (line.Contains($"options.Password.RequireLowercase"))
+                        newText = @$"                options.Password.RequireLowercase = {setup.IdentityRequirements.RequireLowercase.ToString().ToLower()};";
+                    else if (line.Contains($"options.Password.RequireUppercase"))
+                        newText = @$"                options.Password.RequireUppercase = {setup.IdentityRequirements.RequireUppercase.ToString().ToLower()};";
+                    else if (line.Contains($"options.Password.RequireNonAlphanumeric"))
+                        newText = @$"                options.Password.RequireNonAlphanumeric = {setup.IdentityRequirements.RequireNonAlphanumeric.ToString().ToLower()};";
 
-                        output.WriteLine(newText);
-                    }
+                    output.WriteLine(newText);
                 }
             }
 
