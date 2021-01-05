@@ -44,8 +44,8 @@
         {
             if (dto == Dto.ReadParamaters)
                 return DtoFileTextGenerator.GetReadParameterDtoText(classPath.ClassNamespace, entity, dto);
-            else
-                return DtoFileTextGenerator.GetDtoText(classPath, entity, dto);
+
+            return DtoFileTextGenerator.GetDtoText(classPath, entity, dto);
         }
 
         public static void CreateDtoFile(string solutionDirectory, Entity entity, Dto dto)

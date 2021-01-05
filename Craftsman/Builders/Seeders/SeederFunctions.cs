@@ -27,14 +27,14 @@
     {{
         public static void SeedSample{entity.Name}Data({template.DbContext.ContextName} context)
         {{
-            if (!context.{entity.Plural}.Any())
-            {{
-                context.{entity.Plural}.Add(new AutoFaker<{entity.Name}>());
-                context.{entity.Plural}.Add(new AutoFaker<{entity.Name}>());
-                context.{entity.Plural}.Add(new AutoFaker<{entity.Name}>());
+            if (context.{entity.Plural}.Any())
+                return;
 
-                context.SaveChanges();
-            }}
+            context.{entity.Plural}.Add(new AutoFaker<{entity.Name}>());
+            context.{entity.Plural}.Add(new AutoFaker<{entity.Name}>());
+            context.{entity.Plural}.Add(new AutoFaker<{entity.Name}>());
+
+            context.SaveChanges();
         }}
     }}
 }}";

@@ -104,8 +104,8 @@ namespace {classPath.ClassNamespace}
 
             if (myProp == null)
                 return "";
-            else
-                return $@"
+
+            return $@"
         [Fact]
         public async Task Patch{entity.Name}204AndFieldsWereSuccessfullyUpdated()
         {{
@@ -194,8 +194,8 @@ namespace {classPath.ClassNamespace}
 
             if (myProp == null)
                 return "";
-            else
-                return $@"
+
+            return $@"
         [Fact]
         public async Task Put{entity.Name}ReturnsBodyAndFieldsWereSuccessfullyUpdated()
         {{
