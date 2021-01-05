@@ -33,7 +33,7 @@
     public class BespokedBikesDbContext : DbContext
     {
         public BespokedBikesDbContext(
-            DbContextOptions<BespokedBikesDbContext> options) : base(options) 
+            DbContextOptions<BespokedBikesDbContext> options) : base(options)
         {
         }
 

@@ -60,7 +60,7 @@ namespace {classPath.ClassNamespace}
     using WebApi;
     using System.Collections.Generic;
     using Infrastructure.Persistence.Contexts;
-    using Microsoft.Extensions.DependencyInjection;    
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.AspNetCore.JsonPatch;
     using System.Linq;
     using AutoMapper;
@@ -70,7 +70,7 @@ namespace {classPath.ClassNamespace}
 
     [Collection(""Sequential"")]
     public class {Path.GetFileNameWithoutExtension(classPath.FullClassPath)} : IClassFixture<CustomWebApplicationFactory>
-    {{ 
+    {{
         private readonly CustomWebApplicationFactory _factory;
 
         public {Path.GetFileNameWithoutExtension(classPath.FullClassPath)}(CustomWebApplicationFactory factory)
@@ -80,14 +80,14 @@ namespace {classPath.ClassNamespace}
 
         {UpdateEntityTest(template, entity)}
         {PutEntityTest(template,entity)}
-    }} 
+    }}
 }}";
         }
 
         private static string UpdateEntityTest(ApiTemplate template, Entity entity)
         {
-            var myProp = entity.Properties.Where(e => Utilities.PropTypeCleanup(e.Type) == "string" 
-                && e.CanFilter 
+            var myProp = entity.Properties.Where(e => Utilities.PropTypeCleanup(e.Type) == "string"
+                && e.CanFilter
                 && e.IsPrimaryKey == false
                 && e.CanManipulate).FirstOrDefault();
             var lookupVal = $@"""Easily Identified Value For Test""";
@@ -95,7 +95,7 @@ namespace {classPath.ClassNamespace}
             // if no string properties, do one with an int
             if (myProp == null)
             {
-                myProp = entity.Properties.Where(e => Utilities.PropTypeCleanup(e.Type).Contains("int") 
+                myProp = entity.Properties.Where(e => Utilities.PropTypeCleanup(e.Type).Contains("int")
                     && e.CanFilter
                     && e.IsPrimaryKey == false
                     && e.CanManipulate).FirstOrDefault();
@@ -117,7 +117,7 @@ namespace {classPath.ClassNamespace}
 
             var lookupVal = {lookupVal}; // don't know the id at this scope, so need to have another value to lookup
             var fake{entity.Name}One = new Fake{entity.Name} {{ }}.Generate();
-            
+
             var expectedFinalObject = mapper.Map<{Utilities.GetDtoName(entity.Name, Dto.Read)}>(fake{entity.Name}One);
             expectedFinalObject.{myProp.Name} = lookupVal;
 

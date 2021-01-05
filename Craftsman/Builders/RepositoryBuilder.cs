@@ -33,7 +33,7 @@
                 {
                     WriteError($"An unhandled exception occurred when running the API command.\nThe error details are: \n{e.Message}");
                 }
-                 
+
             }
         }
 
@@ -148,7 +148,7 @@
                 throw new ArgumentNullException(nameof({paramBase}Parameters));
             }}
 
-            var collection = _context.{entity.Plural}{fkIncludes} 
+            var collection = _context.{entity.Plural}{fkIncludes}
                 as IQueryable<{entity.Name}>; // TODO: AsNoTracking() should increase performance, but will break the sort tests. need to investigate
 
             var sieveModel = new SieveModel
@@ -250,7 +250,7 @@
             }
 
             // delete the old file and set the name of the new one to the original name
-            File.Delete(classPath.FullClassPath); 
+            File.Delete(classPath.FullClassPath);
             File.Move(tempPath, classPath.FullClassPath);
 
             GlobalSingleton.AddUpdatedFile(classPath.FullClassPath.Replace($"{solutionDirectory}{Path.DirectorySeparatorChar}", ""));

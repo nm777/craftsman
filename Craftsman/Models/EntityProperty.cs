@@ -22,7 +22,7 @@ namespace Craftsman.Models
         /// <summary>
         /// Type of property (e.g. string, int, DateTime?, etc.)
         /// </summary>
-        public string Type 
+        public string Type
         {
             get => _type;
             set => _type = Utilities.PropTypeCleanup(value);
@@ -77,7 +77,7 @@ namespace Craftsman.Models
         /// <summary>
         /// Designates the property as a foreign key for the entity
         /// </summary>
-        public bool IsForeignKey 
+        public bool IsForeignKey
         {
             get => ForeignKeyPropName != null;
             private set => _isForeignKey = value;

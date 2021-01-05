@@ -121,7 +121,7 @@
 
         private static string GetSwaggerServiceExtensionText(ApiTemplate template)
         {
-            var contactUrlLine = IsCleanUri(template.SwaggerConfig.ApiContact.Url) 
+            var contactUrlLine = IsCleanUri(template.SwaggerConfig.ApiContact.Url)
                 ? $@"Url = new Uri(""{ template.SwaggerConfig.ApiContact.Url }""),"
                 : "";
 
@@ -144,7 +144,7 @@
                 services.AddSwaggerGen(config =>
                 {{
                     config.SwaggerDoc(
-                        ""v1"", 
+                        ""v1"",
                         new OpenApiInfo
                         {{
                             Version = ""v1"",

@@ -54,7 +54,7 @@
             entity.Name = "SingularName";
 
             var annotation = EntityBuilder.TableAnnotationBuilder(entity);
-            annotation.Should().Be(@"[Table(""SingularName"")]");            
+            annotation.Should().Be(@"[Table(""SingularName"")]");
         }
 
         [Fact]

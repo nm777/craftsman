@@ -65,7 +65,7 @@
     public class {template.DbContext.ContextName} : DbContext
     {{
         public {template.DbContext.ContextName}(
-            DbContextOptions<{template.DbContext.ContextName}> options) : base(options) 
+            DbContextOptions<{template.DbContext.ContextName}> options) : base(options)
         {{
         }}
 
@@ -173,7 +173,7 @@
                 return "UseNpgsql";
             //else if (Enum.GetName(typeof(DbProvider), DbProvider.MySql) == provider)
             //    return "UseMySql";
-            
+
             return "UseSqlServer";
         }
 
@@ -198,7 +198,7 @@
         public {template.DbContext.ContextName}(
             DbContextOptions<{template.DbContext.ContextName}> options,
             ICurrentUserService currentUserService,
-            IDateTimeService dateTimeService) : base(options) 
+            IDateTimeService dateTimeService) : base(options)
         {{
             _currentUserService = currentUserService;
             _dateTimeService = dateTimeService;
